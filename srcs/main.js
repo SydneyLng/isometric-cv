@@ -22,6 +22,7 @@ const terrain = new Terrain(10, 10);
 scene.add(terrain);
 
 const MainLight = new THREE.DirectionalLight();
+MainLight.intensity = 3;
 MainLight.position.set(1, 2, 3);
 scene.add(MainLight);
 
@@ -29,8 +30,10 @@ const AmbientLight = new THREE.AmbientLight();
 AmbientLight.intensity = 0.5;
 scene.add(AmbientLight);
 
+camera.position.set(15, 3, 10);
 
-camera.position.z = 5;
+
+camera.position.z = 15;
 controls.update();
 
 function animate() {
@@ -52,5 +55,5 @@ TerrainFolder.add(terrain, 'width', 1, 20, 1).name('Width');
 TerrainFolder.add(terrain, 'height', 1, 20, 1).name('Height');
 TerrainFolder.addColor(terrain.material, 'color');
 TerrainFolder.onChange(() => {
-    terrain.createGeometry();
+    terrain.createTerrain();
 });

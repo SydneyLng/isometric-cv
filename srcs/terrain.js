@@ -3,17 +3,56 @@ import * as THREE from 'three';
 export class Terrain extends THREE.Mesh {
     constructor(width, height) {
         super();
+
         this.width = width;
         this.height = height;
+        this.treeCount = 10;
 
-        this.createGeometry();
-        this.material = new THREE.MeshStandardMaterial({ color: 0xfcff61 });
-        this.rotation.x = -Math.PI / 2;
+        this.createTerrain();
+        this.createTrees();
     }
 
-    createGeometry() {
-        this.geometry.dispose();
-        this.geometry = new THREE.PlaneGeometry(this.width, this.height);
-        this.position.set(this.width / 2, 0, this.height / 2);
+    createTerrain() {
+
+        if (this.terrain) {
+            this.terrain.geometry.dispose();
+            this.terrain.material.dispose();
+
+        }
+
+        const terrainMaterial = new THREE.MeshStandardMaterial({
+            color: 0xfcff61,
+            wireframe: true
+        });
+        const terrainGeometry = new THREE.PlaneGeometry(this.width, this.height);
+
+        this.terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+        this.terrain.rotation.x = -Math.PI / 2;
+        this.terrain.position.set(this.width / 2, 0, this.height / 2);
+        this.add(this.terrain);
+    }
+
+    createTrees() {
+        const treeHeight = 1;
+        const treeRadius = 0.2;
+
+        const treeGeometry = new THREE.ConeGeometry(treeRadius, treeHeight, 8);
+        const treeMaterial = new THREE.MeshStandardMaterial({
+            color: 0x50a000,
+            flatShading: true,
+        });
+
+        this.trees = new THREE.Group();
+        this.add(this.trees);
+
+        for (let i = 0; i < this.treeCount; i++) {
+            const treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
+            treeMesh.position.set(
+                this.width * Math.random(),
+                treeHeight / 2,
+                this.height * Math.random()
+            );
+            this.trees.add(treeMesh);
+        }
     }
 }
