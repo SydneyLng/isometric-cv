@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import GUI from 'three/addons/libs/lil-gui.module.min.js';
 import Stats from 'three/addons/libs/stats.module.js';
+import { Terrain } from './terrain.js';
 
 const gui = new GUI();
 
@@ -17,6 +18,9 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const controls = new OrbitControls(camera, renderer.domElement);
 
+const terrain = new Terrain(10, 10);
+scene.add(terrain);
+
 const MainLight = new THREE.DirectionalLight();
 MainLight.position.set(1, 2, 3);
 scene.add(MainLight);
@@ -25,10 +29,6 @@ const AmbientLight = new THREE.AmbientLight();
 AmbientLight.intensity = 0.5;
 scene.add(AmbientLight);
 
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
 
 camera.position.z = 5;
 controls.update();
@@ -47,6 +47,10 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-const cubeFolder = gui.addFolder('Cube');
-cubeFolder.add(cube.position, 'x', -2, 2, 0.01).name('Position X');
-cubeFolder.addColor(cube.material, 'color');
+const TerrainFolder = gui.addFolder('Terrain');
+TerrainFolder.add(terrain, 'width', 1, 20, 1).name('Width');
+TerrainFolder.add(terrain, 'height', 1, 20, 1).name('Height');
+TerrainFolder.addColor(terrain.material, 'color');
+TerrainFolder.onChange(() => {
+    terrain.createGeometry();
+});
